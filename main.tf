@@ -18,7 +18,8 @@ resource "aws_instance" "app_server" {
   instance_type   = "t2.micro"
   key_name        = "key-pair"
   security_groups = ["ssh-devops-gabriel"]
+  user_data       = file("scripts/app-server.sh")
   tags = {
-    Name = "made-by-terraform2"
+    Name = "aws-test-terraform-222"
   }
 }
