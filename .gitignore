@@ -33,3 +33,9 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.pem
+
+# Ignore ssh keys
+mfm-dev.pub
+mfm-dev
+mfm-prod.pub
+mfm-prod

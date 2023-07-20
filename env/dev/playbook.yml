@@ -1,0 +1,74 @@
+- hosts: mfm-dev
+  become: yes
+  tasks:
+    - name: Install the gpg key for nodejs LTS
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_18.x jammy main"
+        state: present
+        update_cache: yes
+
+    - name: Install the nodejs
+      apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+
+    
+    - name: installando docker
+      apt:
+        pkg:
+          - docker.io
+        state: latest
+
+    - name: installando docker-compose
+      apt:
+        pkg:
+          - docker-compose
+        state: latest
+
+    - name: Install nestjs CLI
+      npm:
+        name: "@nestjs/cli"
+        global: yes
+
+    - name: Clone NestJS app
+      git:
+        repo: https://github.com/GabrielMessiasdaRosa/iluvcoffee.git
+        dest: /home/ubuntu/iluvcoffee
+        clone: yes
+        force: yes
+
+    - name: Change to development branch
+      shell: sudo git checkout development
+      args:
+        chdir: /home/ubuntu/iluvcoffee/
+
+    - name: Install NestJS app dependencies
+      shell: sudo npm install
+      args:
+        chdir: /home/ubuntu/iluvcoffee/
+
+    - name: install pm2
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Build NestJS app
+      shell: sudo npm run build
+      args:
+        chdir: /home/ubuntu/iluvcoffee/
+
+    - name: Start docker-compose -d
+      shell: sudo docker-compose up -d
+      args:
+        chdir: /home/ubuntu/iluvcoffee/
+
+    - name: Start NestJS app
+      args:
+        chdir: /home/ubuntu/iluvcoffee/
+      shell: sudo pm2 start dist/src/main.js --name iluvcoffee_rest_api

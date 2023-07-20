@@ -1,4 +1,4 @@
-- hosts: terraform-ansible
+- hosts: mfm-prod
   become: yes
   tasks:
     - name: Install the gpg key for nodejs LTS
@@ -45,6 +45,7 @@
       shell: sudo npm install
       args:
         chdir: /home/ubuntu/iluvcoffee/
+
     - name: install pm2
       npm:
         name: pm2
